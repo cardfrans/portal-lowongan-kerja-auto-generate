@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "social-media-designer": {
+      "source": "herdiansah/antigravity-skills-master",
+      "sourceType": "github",
+      "skillPath": ".agent/skills/social-media-designer/SKILL.md",
+      "computedHash": "166baeb8979e335c99e26ffb544a10c4bc0c2477829d64f33af54cff510e4007"
+    }
+  }
+}
