@@ -21,6 +21,65 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Deploy ke Vercel dengan TiDB Cloud
+
+Repository ini sudah memiliki entrypoint serverless di `api/index.php` dan konfigurasi
+`vercel.json`. Ikuti langkah berikut saat membuat project baru di Vercel:
+
+1. Import repository ini ke Vercel. Biarkan framework preset terdeteksi otomatis.
+2. Pastikan Root Directory adalah root repository, Build Command adalah `npm run build`,
+   dan Install Command menggunakan `npm install`.
+3. Tambahkan environment variables berikut pada Environment `Production` dan `Preview`:
+
+   ```text
+   APP_NAME=UCC Job Portal
+   APP_ENV=production
+   APP_KEY=<hasil dari php artisan key:generate --show>
+   APP_DEBUG=false
+   APP_URL=https://<domain-vercel-anda>
+   APP_TIMEZONE=Asia/Jakarta
+
+   DB_CONNECTION=mysql
+   DB_HOST=<host TiDB Cloud>
+   DB_PORT=4000
+   DB_DATABASE=<nama-database>
+   DB_USERNAME=<username TiDB>
+   DB_PASSWORD=<password TiDB>
+   TIDB_CA_CERT=<isi certificate CA TiDB jika diwajibkan cluster>
+
+   SESSION_DRIVER=database
+   CACHE_STORE=database
+   QUEUE_CONNECTION=database
+   LOG_CHANNEL=stderr
+   FILESYSTEM_DISK=s3
+   ```
+
+   `TIDB_CA_CERT` boleh dikosongkan bila koneksi TiDB Cloud yang digunakan tidak
+   memerlukan certificate CA terpisah. Entrypoint akan menulis nilainya ke file
+   sementara dan mengonfigurasi `MYSQL_ATTR_SSL_CA` secara otomatis. Jangan commit
+   nilai rahasia ke repository.
+4. Jalankan migrasi dari komputer lokal terhadap database TiDB yang sama:
+
+   ```bash
+   php artisan migrate --force
+   ```
+
+   Migrasi tidak dijalankan otomatis pada setiap cold start function.
+5. Deploy project. Setelah deploy, uji `/up`, halaman login, dan alur autentikasi.
+
+### Penyimpanan file dan Browsershot
+
+Filesystem lokal Vercel hanya bersifat sementara. Konfigurasi entrypoint memakai `/tmp`
+untuk cache, session file, dan log runtime. Karena aplikasi ini menyimpan logo perusahaan
+dan poster, gunakan object storage S3-compatible (misalnya S3, R2, atau layanan serupa)
+dan isi `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`,
+`AWS_BUCKET`, serta `AWS_ENDPOINT` di Vercel.
+
+Fitur generate poster memakai Browsershot dan Chrome lokal. Fitur tersebut tidak dapat
+diandalkan di Vercel serverless tanpa runtime Chromium yang kompatibel. Jalankan generator
+poster pada worker/service terpisah, atau ganti implementasinya dengan layanan screenshot
+eksternal sebelum mengaktifkan fitur tersebut di production.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
