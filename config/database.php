@@ -10,6 +10,20 @@ $mysqlSslCaAttribute = defined('Pdo\\Mysql::ATTR_SSL_CA')
     ? constant('Pdo\\Mysql::ATTR_SSL_CA')
     : (defined('PDO::MYSQL_ATTR_SSL_CA') ? constant('PDO::MYSQL_ATTR_SSL_CA') : null);
 $mysqlSslCaPath = env('MYSQL_ATTR_SSL_CA');
+$tidbCaCertificate = env('TIDB_CA_CERT');
+
+if (
+    is_string($tidbCaCertificate)
+    && str_contains($tidbCaCertificate, '-----BEGIN CERTIFICATE-----')
+    && is_dir(sys_get_temp_dir())
+    && is_writable(sys_get_temp_dir())
+) {
+    $mysqlSslCaPath = sys_get_temp_dir().DIRECTORY_SEPARATOR.'ucc-tidb-ca.pem';
+
+    if (! is_file($mysqlSslCaPath)) {
+        file_put_contents($mysqlSslCaPath, $tidbCaCertificate);
+    }
+}
 
 return [
 
