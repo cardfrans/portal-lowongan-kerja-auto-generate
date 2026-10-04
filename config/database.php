@@ -9,6 +9,7 @@ $runtimeDatabasePassword = $_SERVER['DB_PASSWORD']
 $mysqlSslCaAttribute = defined('Pdo\\Mysql::ATTR_SSL_CA')
     ? constant('Pdo\\Mysql::ATTR_SSL_CA')
     : (defined('PDO::MYSQL_ATTR_SSL_CA') ? constant('PDO::MYSQL_ATTR_SSL_CA') : null);
+$mysqlSslCaPath = env('MYSQL_ATTR_SSL_CA');
 
 return [
 
@@ -62,9 +63,9 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') && $mysqlSslCaAttribute !== null ? [
-                $mysqlSslCaAttribute => env('MYSQL_ATTR_SSL_CA'),
-            ] : [],
+            'options' => extension_loaded('pdo_mysql') && $mysqlSslCaAttribute !== null
+                ? array_filter([$mysqlSslCaAttribute => $mysqlSslCaPath])
+                : [],
         ],
 
         'mariadb' => [
@@ -82,9 +83,9 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') && $mysqlSslCaAttribute !== null ? [
-                $mysqlSslCaAttribute => env('MYSQL_ATTR_SSL_CA'),
-            ] : [],
+            'options' => extension_loaded('pdo_mysql') && $mysqlSslCaAttribute !== null
+                ? array_filter([$mysqlSslCaAttribute => $mysqlSslCaPath])
+                : [],
         ],
 
         'pgsql' => [
