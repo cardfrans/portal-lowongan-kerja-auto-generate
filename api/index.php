@@ -3,6 +3,23 @@
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 
 if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL'])) {
+    $forwardedProto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
+    $forwardedHost = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['HTTP_HOST'] ?? '';
+
+    if ($forwardedProto === 'https' || isset($_SERVER['VERCEL'])) {
+        $_SERVER['HTTPS'] = 'on';
+        $_SERVER['SERVER_PORT'] = '443';
+    }
+
+    if ($forwardedHost !== '') {
+        $_SERVER['HTTP_HOST'] = $forwardedHost;
+    }
+
+    if ($forwardedHost !== '') {
+        $_ENV['APP_URL'] = 'https://'.$forwardedHost;
+        $_SERVER['APP_URL'] = 'https://'.$forwardedHost;
+    }
+
     $storagePath = '/tmp/ucc-storage';
     $_SERVER['LARAVEL_STORAGE_PATH'] = $storagePath;
     $_ENV['LARAVEL_STORAGE_PATH'] = $storagePath;

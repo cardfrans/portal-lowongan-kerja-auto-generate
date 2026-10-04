@@ -58,6 +58,9 @@ Repository ini sudah memiliki entrypoint serverless di `api/index.php` dan konfi
    akan menulis nilainya ke file sementara dan mengonfigurasi `MYSQL_ATTR_SSL_CA`
    secara otomatis. Jika variable ini kosong, runtime akan mencoba CA bundle sistem.
    Jangan commit nilai rahasia ke repository.
+
+   `APP_URL` harus menggunakan `https://`, bukan `http://`, agar URL asset Vite
+   tidak diblokir browser sebagai Mixed Content.
 4. Jalankan migrasi dari komputer lokal terhadap database TiDB yang sama:
 
    ```bash
