@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
 if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL'])) {
     $storagePath = '/tmp/ucc-storage';
     $_SERVER['LARAVEL_STORAGE_PATH'] = $storagePath;
