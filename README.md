@@ -54,10 +54,10 @@ Repository ini sudah memiliki entrypoint serverless di `api/index.php` dan konfi
    FILESYSTEM_DISK=s3
    ```
 
-   `TIDB_CA_CERT` boleh dikosongkan bila koneksi TiDB Cloud yang digunakan tidak
-   memerlukan certificate CA terpisah. Entrypoint akan menulis nilainya ke file
-   sementara dan mengonfigurasi `MYSQL_ATTR_SSL_CA` secara otomatis. Jangan commit
-   nilai rahasia ke repository.
+   `TIDB_CA_CERT` sebaiknya diisi dengan certificate CA dari TiDB Cloud. Entrypoint
+   akan menulis nilainya ke file sementara dan mengonfigurasi `MYSQL_ATTR_SSL_CA`
+   secara otomatis. Jika variable ini kosong, runtime akan mencoba CA bundle sistem.
+   Jangan commit nilai rahasia ke repository.
 4. Jalankan migrasi dari komputer lokal terhadap database TiDB yang sama:
 
    ```bash

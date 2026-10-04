@@ -39,6 +39,14 @@ if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL'])) {
 
         $_ENV['MYSQL_ATTR_SSL_CA'] = $certificatePath;
         $_SERVER['MYSQL_ATTR_SSL_CA'] = $certificatePath;
+    } elseif (is_file('/etc/ssl/certs/ca-certificates.crt')) {
+        $_ENV['MYSQL_ATTR_SSL_CA'] = '/etc/ssl/certs/ca-certificates.crt';
+        $_SERVER['MYSQL_ATTR_SSL_CA'] = '/etc/ssl/certs/ca-certificates.crt';
+    } elseif (is_file('/etc/ssl/cert.pem')) {
+        $_ENV['MYSQL_ATTR_SSL_CA'] = '/etc/ssl/cert.pem';
+        $_SERVER['MYSQL_ATTR_SSL_CA'] = '/etc/ssl/cert.pem';
+    } else {
+        throw new RuntimeException('TiDB requires TLS. Set TIDB_CA_CERT in Vercel Environment Variables.');
     }
 }
 
