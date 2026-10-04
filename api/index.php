@@ -6,6 +6,35 @@ if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL'])) {
     $_ENV['LARAVEL_STORAGE_PATH'] = $storagePath;
 
     foreach ([
+        'APP_KEY',
+        'APP_ENV',
+        'APP_DEBUG',
+        'DB_CONNECTION',
+        'DB_HOST',
+        'DB_PORT',
+        'DB_DATABASE',
+        'DB_USERNAME',
+        'DB_PASSWORD',
+        'TIDB_CA_CERT',
+    ] as $key) {
+        $value = $_SERVER[$key] ?? null;
+        if ($value === null || $value === '') {
+            $value = $_ENV[$key] ?? null;
+        }
+        if ($value === null || $value === '') {
+            $value = getenv($key);
+        }
+        if ($value !== false && $value !== null && $value !== '') {
+            $_SERVER[$key] = $value;
+            $_ENV[$key] = $value;
+        }
+    }
+
+    if (trim((string) ($_ENV['DB_PASSWORD'] ?? '')) === '') {
+        throw new RuntimeException('DB_PASSWORD is missing in Vercel Environment Variables.');
+    }
+
+    foreach ([
         $storagePath,
         $storagePath.'/framework/cache',
         $storagePath.'/framework/sessions',
