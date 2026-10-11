@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1080, height=1350, initial-scale=1.0">
     <title>Poster Lowongan - {{ $job->position }}</title>
-    <!-- Tailwind CSS for Browsershot rendering -->
+    <!-- Tailwind CSS keeps the live HTML preview consistent with the app. -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {

@@ -61,7 +61,7 @@
                     <h2 class="text-base font-bold text-rose-900">Status: Perlu Revisi / Ditolak (Rejected)</h2>
                     <p class="text-sm text-rose-800 mt-1 font-semibold">Catatan Alasan dari Admin:</p>
                     <div class="bg-white/80 border border-rose-200 rounded-lg p-3 text-sm text-rose-950 mt-1 font-medium">
-                        {{ $jobVacancy->rejection_reason }}
+                        {{ $jobVacancy->admin_reject_reason ?: $jobVacancy->rejection_reason }}
                     </div>
                     <div class="mt-3">
                         <a href="{{ route('company.vacancies.edit', $jobVacancy) }}"

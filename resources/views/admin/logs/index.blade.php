@@ -33,7 +33,6 @@
                                 <th class="py-3.5 px-6">Tanggal & Jam</th>
                                 <th class="py-3.5 px-6">Perusahaan & Lowongan</th>
                                 <th class="py-3.5 px-6">Alasan Perubahan (Pesan)</th>
-                                <th class="py-3.5 px-6">Snapshot Data Lama</th>
                                 <th class="py-3.5 px-6 text-right">Status / Aksi</th>
                             </tr>
                         </thead>
@@ -57,12 +56,6 @@
                                     </td>
                                     <td class="py-4 px-6 max-w-sm">
                                         <div class="font-semibold text-slate-900 text-sm">"{{ $log->edit_reason }}"</div>
-                                    </td>
-                                    <td class="py-4 px-6 text-xs text-slate-500 max-w-xs">
-                                        <details class="cursor-pointer">
-                                            <summary class="font-medium text-blue-600 hover:underline">Lihat Snapshot JSON</summary>
-                                            <pre class="mt-2 p-2 bg-slate-900 text-slate-100 rounded text-[11px] overflow-x-auto max-h-32">{{ json_encode($log->old_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
-                                        </details>
                                     </td>
                                     <td class="py-4 px-6 text-right whitespace-nowrap">
                                         @if ($log->status === 'unread')

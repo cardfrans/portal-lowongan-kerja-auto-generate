@@ -50,6 +50,7 @@ class JobVacancy extends Model
             'application_deadline' => 'date',
             'information_consent' => 'boolean',
             'publication_consent' => 'boolean',
+            'selected_template' => 'integer',
         ];
     }
 

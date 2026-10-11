@@ -120,10 +120,10 @@
                                             <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200">
                                                 Perlu Revisi (Rejected)
                                             </span>
-                                            @if ($job->rejection_reason)
+                                            @if ($job->admin_reject_reason ?: $job->rejection_reason)
                                                 <p class="mt-2 max-w-xs text-xs leading-relaxed text-rose-800">
                                                     <span class="font-bold">Catatan Admin:</span>
-                                                    {{ Str::limit($job->rejection_reason, 120) }}
+                                                    {{ Str::limit($job->admin_reject_reason ?: $job->rejection_reason, 120) }}
                                                 </p>
                                             @endif
                                         @elseif ($job->status === 'revised')
@@ -182,10 +182,10 @@
 
                             <p class="text-xs text-slate-600 line-clamp-2">{{ $job->address }}</p>
 
-                            @if ($job->status === 'rejected' && $job->rejection_reason)
+                            @if ($job->status === 'rejected' && ($job->admin_reject_reason ?: $job->rejection_reason))
                                 <div class="rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs leading-relaxed text-rose-900">
                                     <span class="font-bold">Catatan Admin:</span>
-                                    {{ $job->rejection_reason }}
+                                    {{ $job->admin_reject_reason ?: $job->rejection_reason }}
                                 </div>
                             @endif
 

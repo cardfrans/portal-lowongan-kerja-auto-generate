@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\JobEditLog;
 use App\Models\JobVacancy;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,7 +13,9 @@ class JobVacancyPortalTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected User $companyA;
+
     protected User $companyB;
 
     protected function setUp(): void
@@ -182,6 +183,7 @@ class JobVacancyPortalTest extends TestCase
         $rejectResponse->assertRedirect();
         $this->assertEquals('rejected', $vacancy->fresh()->status);
         $this->assertEquals('Mohon sertakan masa berlaku lowongan dan link email penerimaan berkas.', $vacancy->fresh()->rejection_reason);
+        $this->assertEquals('Mohon sertakan masa berlaku lowongan dan link email penerimaan berkas.', $vacancy->fresh()->admin_reject_reason);
     }
 
     public function test_company_can_see_admin_rejection_reason_in_revision_list(): void
@@ -211,6 +213,26 @@ class JobVacancyPortalTest extends TestCase
         $response->assertSee($reason);
     }
 
+    public function test_company_detail_uses_admin_rejection_reason(): void
+    {
+        $vacancy = JobVacancy::create([
+            'company_id' => $this->companyA->id,
+            'company_name' => 'PT Astra International',
+            'position' => 'Supply Chain Trainee',
+            'qualifications' => 'S1 Teknik Industri',
+            'address' => 'Jakarta',
+            'status' => 'rejected',
+            'rejection_reason' => null,
+            'admin_reject_reason' => 'Mohon perjelas pengalaman kerja yang dibutuhkan.',
+        ]);
+
+        $response = $this->actingAs($this->companyA)
+            ->get(route('company.vacancies.show', $vacancy));
+
+        $response->assertOk();
+        $response->assertSee('Mohon perjelas pengalaman kerja yang dibutuhkan.');
+    }
+
     public function test_poster_render_routes_accessible_for_admin(): void
     {
         $vacancy = JobVacancy::create([
@@ -236,5 +258,35 @@ class JobVacancyPortalTest extends TestCase
         $this->actingAs($this->admin)
             ->get(route('admin.posters.render', ['jobVacancy' => $vacancy, 'templateId' => 3]))
             ->assertNotFound();
+    }
+
+    public function test_admin_can_generate_and_download_a_vercel_compatible_poster(): void
+    {
+        $vacancy = JobVacancy::create([
+            'company_id' => $this->companyA->id,
+            'company_name' => 'PT Astra International',
+            'position' => 'IT Auditor',
+            'qualifications' => "S1 Sistem Informasi\nPengalaman audit teknologi",
+            'other_info' => 'Penempatan Jakarta',
+            'address' => 'Jakarta',
+            'status' => 'approved',
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.posters.generate', $vacancy), ['template_id' => 2])
+            ->assertRedirect();
+
+        $vacancy->refresh();
+        $this->assertSame(2, $vacancy->selected_template);
+        $this->assertStringEndsWith('.svg', $vacancy->generated_poster_path);
+
+        $download = $this->actingAs($this->admin)
+            ->get(route('admin.posters.download', $vacancy));
+
+        $download->assertOk();
+        $download->assertHeader('Content-Type', 'image/svg+xml; charset=UTF-8');
+        $download->assertHeader('Content-Disposition', 'attachment; filename="poster-pt-astra-international-it-auditor.svg"');
+        $download->assertSee('<svg', false);
+        $download->assertSee('IT Auditor');
     }
 }

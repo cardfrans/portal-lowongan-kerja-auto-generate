@@ -70,7 +70,7 @@ Repository ini sudah memiliki entrypoint serverless di `api/index.php` dan konfi
    Migrasi tidak dijalankan otomatis pada setiap cold start function.
 5. Deploy project. Setelah deploy, uji `/up`, halaman login, dan alur autentikasi.
 
-### Penyimpanan file dan Browsershot
+### Penyimpanan file dan poster
 
 Filesystem lokal Vercel hanya bersifat sementara. Konfigurasi entrypoint memakai `/tmp`
 untuk cache, session file, dan log runtime. Karena aplikasi ini menyimpan logo perusahaan
@@ -78,10 +78,10 @@ dan poster, gunakan object storage S3-compatible (misalnya S3, R2, atau layanan 
 dan isi `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`,
 `AWS_BUCKET`, serta `AWS_ENDPOINT` di Vercel.
 
-Fitur generate poster memakai Browsershot dan Chrome lokal. Fitur tersebut tidak dapat
-diandalkan di Vercel serverless tanpa runtime Chromium yang kompatibel. Jalankan generator
-poster pada worker/service terpisah, atau ganti implementasinya dengan layanan screenshot
-eksternal sebelum mengaktifkan fitur tersebut di production.
+Generator poster menggunakan SVG yang dibuat langsung oleh PHP. Cara ini tidak membutuhkan
+Node.js, Puppeteer, atau Chrome sehingga dapat berjalan di Vercel Serverless. File SVG
+dihasilkan saat tombol unduh dipanggil, sehingga tidak bergantung pada filesystem sementara
+Vercel dan dapat langsung diunduh oleh admin.
 
 ## Learning Laravel
 

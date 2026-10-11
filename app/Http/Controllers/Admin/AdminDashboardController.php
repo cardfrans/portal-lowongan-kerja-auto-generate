@@ -8,6 +8,7 @@ use App\Models\JobEditLog;
 use App\Models\JobVacancy;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class AdminDashboardController extends Controller
@@ -19,7 +20,19 @@ class AdminDashboardController extends Controller
     {
         $status = $request->get('status', 'pending');
 
-        $query = JobVacancy::with('company')->latest();
+        $query = JobVacancy::query()
+            ->select([
+                'id',
+                'company_id',
+                'company_name',
+                'position',
+                'status',
+                'created_at',
+                'rejection_reason',
+                'admin_reject_reason',
+            ])
+            ->with('company:id,name,email')
+            ->latest();
 
         if (in_array($status, ['pending', 'approved', 'rejected', 'revised'])) {
             $query->where('status', $status);
@@ -27,12 +40,17 @@ class AdminDashboardController extends Controller
 
         $vacancies = $query->paginate(10)->withQueryString();
 
+        $statusCounts = JobVacancy::query()
+            ->select('status', DB::raw('COUNT(*) as total'))
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
         $stats = [
-            'pending' => JobVacancy::whereIn('status', ['pending', 'revised'])->count(),
-            'approved' => JobVacancy::where('status', 'approved')->count(),
-            'rejected' => JobVacancy::where('status', 'rejected')->count(),
-            'revised' => JobVacancy::where('status', 'revised')->count(),
-            'total' => JobVacancy::count(),
+            'pending' => $statusCounts->get('pending', 0) + $statusCounts->get('revised', 0),
+            'approved' => $statusCounts->get('approved', 0),
+            'rejected' => $statusCounts->get('rejected', 0),
+            'revised' => $statusCounts->get('revised', 0),
+            'total' => $statusCounts->sum(),
             'unread_logs' => JobEditLog::where('status', 'unread')->count(),
         ];
 
@@ -44,7 +62,16 @@ class AdminDashboardController extends Controller
      */
     public function show(JobVacancy $jobVacancy): View
     {
-        $jobVacancy->load(['company', 'editLogs']);
+        $jobVacancy->load([
+            'company',
+            'editLogs' => fn ($query) => $query->select([
+                'id',
+                'job_vacancy_id',
+                'edit_reason',
+                'status',
+                'created_at',
+            ]),
+        ]);
 
         return view('admin.vacancies.show', compact('jobVacancy'));
     }
@@ -73,8 +100,9 @@ class AdminDashboardController extends Controller
     {
         $jobVacancy->update([
             'status' => 'rejected',
-            'rejection_reason' => $request->rejection_reason,
             'admin_reject_reason' => $request->rejection_reason,
+            'rejection_reason' => $request->rejection_reason,
+            'company_revision_reason' => null,
         ]);
 
         return redirect()
@@ -87,7 +115,15 @@ class AdminDashboardController extends Controller
      */
     public function logs(Request $request): View
     {
-        $logs = JobEditLog::with(['jobVacancy.company'])
+        $logs = JobEditLog::query()
+            ->select([
+                'id',
+                'job_vacancy_id',
+                'edit_reason',
+                'status',
+                'created_at',
+            ])
+            ->with('jobVacancy:id,company_name,position')
             ->latest()
             ->paginate(15);
 
