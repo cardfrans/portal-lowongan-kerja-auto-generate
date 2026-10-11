@@ -56,6 +56,52 @@ class JobVacancyPortalTest extends TestCase
         $createResponse = $this->actingAs($this->companyA)->get(route('company.vacancies.create'));
         $createResponse->assertStatus(200);
         $createResponse->assertSee('Form Pengajuan Lowongan Kerja');
+        $createResponse->assertDontSee('Bidang Perusahaan *');
+        $createResponse->assertDontSee('Nama Narahubung *');
+    }
+
+    public function test_company_profile_fields_are_saved_and_reused_for_vacancy(): void
+    {
+        $this->actingAs($this->companyA)->patch(route('profile.update'), [
+            'name' => 'PT Astra International',
+            'email' => 'astra@example.com',
+            'business_area' => 'Teknologi Informasi',
+            'province' => 'Kepulauan Riau',
+            'company_website' => 'https://astra.example.com',
+            'company_email' => 'hr@astra.example.com',
+            'contact_name' => 'Rina',
+            'contact_position' => 'Recruiter',
+            'contact_phone' => '08123456789',
+        ])->assertRedirect(route('profile.edit'));
+
+        $this->assertDatabaseHas('users', [
+            'id' => $this->companyA->id,
+            'business_area' => 'Teknologi Informasi',
+            'province' => 'Kepulauan Riau',
+            'contact_name' => 'Rina',
+        ]);
+
+        $this->actingAs($this->companyA)->post(route('company.vacancies.store'), [
+            'company_name' => 'Nama yang Tidak Dipakai',
+            'position' => 'Data Analyst Specialist',
+            'required_count' => 2,
+            'qualifications' => "S1 Statistika / Matematika / TI\nMenguasai Python dan SQL",
+            'job_description' => 'Menganalisis data operasional dan menyusun laporan berkala.',
+            'address' => 'Jakarta Pusat',
+            'work_location' => 'Jakarta',
+            'application_deadline' => now()->addDays(14)->toDateString(),
+            'application_method' => 'Email',
+            'application_address' => 'hr@astra.example.com',
+            'information_consent' => '1',
+            'publication_consent' => '1',
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('job_vacancies', [
+            'company_id' => $this->companyA->id,
+            'company_name' => 'PT Astra International',
+            'business_area' => 'Teknologi Informasi',
+            'contact_name' => 'Rina',
+        ]);
     }
 
     public function test_company_can_submit_new_job_vacancy(): void

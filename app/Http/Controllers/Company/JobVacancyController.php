@@ -73,6 +73,18 @@ class JobVacancyController extends Controller
         $data['status'] = 'pending';
         $data['information_consent'] = true;
         $data['publication_consent'] = true;
+        $data = array_merge($data, $request->user()->only([
+            'name',
+            'business_area',
+            'province',
+            'company_website',
+            'company_email',
+            'contact_name',
+            'contact_position',
+            'contact_phone',
+        ]));
+        $data['company_name'] = $data['name'];
+        unset($data['name']);
 
         $vacancy = $request->user()->jobVacancies()->create($data);
 
@@ -122,6 +134,18 @@ class JobVacancyController extends Controller
         $data['status'] = $vacancy->status === 'rejected' ? 'revised' : 'pending';
         $data['company_revision_reason'] = $request->edit_reason;
         $data['rejection_reason'] = $vacancy->rejection_reason;
+        $data = array_merge($data, $request->user()->only([
+            'name',
+            'business_area',
+            'province',
+            'company_website',
+            'company_email',
+            'contact_name',
+            'contact_position',
+            'contact_phone',
+        ]));
+        $data['company_name'] = $data['name'];
+        unset($data['name']);
 
         DB::transaction(function () use ($vacancy, $request, $data): void {
             JobEditLog::create([

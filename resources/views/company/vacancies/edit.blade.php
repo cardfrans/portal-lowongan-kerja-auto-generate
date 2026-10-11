@@ -29,37 +29,6 @@
                 @csrf
                 @method('PUT')
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    @foreach ([
-                        'business_area' => 'Bidang Perusahaan',
-                        'province' => 'Provinsi',
-                        'company_website' => 'Website / Media Sosial',
-                        'company_email' => 'Email Perusahaan',
-                        'contact_name' => 'Nama Narahubung',
-                        'contact_position' => 'Jabatan Narahubung',
-                        'contact_phone' => 'Kontak / WhatsApp',
-                    ] as $field => $label)
-                        <div>
-                            <label for="{{ $field }}" class="block text-sm font-semibold text-slate-800 mb-1.5">{{ $label }} *</label>
-                            @if (in_array($field, ['business_area', 'province'], true))
-                                @php
-                                    $options = $field === 'business_area'
-                                        ? ['Teknologi Informasi', 'Manufaktur', 'Keuangan', 'Pendidikan', 'Kesehatan', 'Perdagangan', 'Jasa', 'Lainnya']
-                                        : ['Kepulauan Riau', 'DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'Jawa Timur', 'Bali', 'Sumatera Utara', 'Lainnya'];
-                                @endphp
-                                <select id="{{ $field }}" name="{{ $field }}" required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm">
-                                    <option value="">Pilih {{ strtolower($label) }}</option>
-                                    @foreach ($options as $option)
-                                        <option value="{{ $option }}" @selected(old($field, $jobVacancy->{$field}) === $option)>{{ $option }}</option>
-                                    @endforeach
-                                </select>
-                            @else
-                                <input id="{{ $field }}" name="{{ $field }}" value="{{ old($field, $jobVacancy->{$field}) }}" {{ $field === 'company_email' ? 'type=email' : '' }} required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm">
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-
                 <!-- Nama Perusahaan -->
                 <div x-data="{ count: 0, max: 50 }" x-init="count = $refs.companyName.value.length">
                     <label for="company_name" class="block text-sm font-semibold text-slate-800 mb-1.5">

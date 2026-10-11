@@ -22,13 +22,6 @@ class StoreJobVacancyRequest extends FormRequest
     {
         $this->merge([
             'company_name' => strip_tags(trim((string) $this->input('company_name'))),
-            'business_area' => strip_tags(trim((string) $this->input('business_area'))),
-            'province' => strip_tags(trim((string) $this->input('province'))),
-            'company_website' => strip_tags(trim((string) $this->input('company_website'))),
-            'contact_name' => strip_tags(trim((string) $this->input('contact_name'))),
-            'contact_position' => strip_tags(trim((string) $this->input('contact_position'))),
-            'contact_phone' => strip_tags(trim((string) $this->input('contact_phone'))),
-            'company_email' => strip_tags(trim((string) $this->input('company_email'))),
             'position' => strip_tags(trim((string) $this->input('position'))),
             'required_count' => $this->input('required_count'),
             'qualifications' => strip_tags(trim((string) $this->input('qualifications'))),
@@ -52,13 +45,6 @@ class StoreJobVacancyRequest extends FormRequest
     {
         return [
             'company_name' => ['required', 'string', 'max:100'],
-            'business_area' => ['required', 'string', 'max:100'],
-            'province' => ['required', 'string', 'max:100'],
-            'company_website' => ['required', 'string', 'max:255'],
-            'contact_name' => ['required', 'string', 'max:100'],
-            'contact_position' => ['required', 'string', 'max:100'],
-            'contact_phone' => ['required', 'string', 'max:30'],
-            'company_email' => ['required', 'email', 'max:255'],
             'position' => ['required', 'string', 'max:50'],
             'required_count' => ['required', 'integer', 'min:1'],
             'qualifications' => ['required', 'string', 'min:10', 'max:450'],

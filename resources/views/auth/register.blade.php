@@ -29,6 +29,45 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div>
+                <x-input-label for="business_area" value="Bidang Perusahaan" class="text-slate-700 font-semibold" />
+                <select id="business_area" name="business_area" required class="mt-1 block w-full rounded-lg border-slate-300 focus:border-blue-600 focus:ring-blue-500">
+                    <option value="">Pilih bidang perusahaan</option>
+                    @foreach (['Teknologi Informasi', 'Manufaktur', 'Keuangan', 'Pendidikan', 'Kesehatan', 'Perdagangan', 'Jasa', 'Lainnya'] as $area)
+                        <option value="{{ $area }}" @selected(old('business_area') === $area)>{{ $area }}</option>
+                    @endforeach
+                </select>
+                <x-input-error :messages="$errors->get('business_area')" class="mt-2" />
+            </div>
+            <div>
+                <x-input-label for="province" value="Provinsi" class="text-slate-700 font-semibold" />
+                <select id="province" name="province" required class="mt-1 block w-full rounded-lg border-slate-300 focus:border-blue-600 focus:ring-blue-500">
+                    <option value="">Pilih provinsi</option>
+                    @foreach (['Kepulauan Riau', 'DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'Jawa Timur', 'Bali', 'Sumatera Utara', 'Lainnya'] as $province)
+                        <option value="{{ $province }}" @selected(old('province') === $province)>{{ $province }}</option>
+                    @endforeach
+                </select>
+                <x-input-error :messages="$errors->get('province')" class="mt-2" />
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            @foreach ([
+                'company_website' => ['Website / Media Sosial', 'url'],
+                'company_email' => ['Email Perusahaan', 'email'],
+                'contact_name' => ['Nama Narahubung', 'text'],
+                'contact_position' => ['Jabatan Narahubung', 'text'],
+                'contact_phone' => ['Kontak / WhatsApp', 'text'],
+            ] as $field => [$label, $type])
+                <div class="{{ $field === 'contact_phone' ? 'sm:col-span-2' : '' }}">
+                    <x-input-label for="{{ $field }}" :value="$label" class="text-slate-700 font-semibold" />
+                    <x-text-input id="{{ $field }}" class="block mt-1 w-full rounded-lg border-slate-300 focus:border-blue-600 focus:ring-blue-500" type="{{ $type }}" name="{{ $field }}" :value="old($field)" required />
+                    <x-input-error :messages="$errors->get($field)" class="mt-2" />
+                </div>
+            @endforeach
+        </div>
+
         <!-- Password -->
         <div>
             <x-input-label for="password" :value="__('Password')" />

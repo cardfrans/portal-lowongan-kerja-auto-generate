@@ -22,47 +22,6 @@
             <form method="POST" action="{{ route('company.vacancies.store') }}" class="space-y-6">
                 @csrf
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label for="business_area" class="block text-sm font-semibold text-slate-800 mb-1.5">Bidang Perusahaan *</label>
-                        <select id="business_area" name="business_area" required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm">
-                            <option value="">Pilih bidang perusahaan</option>
-                            @foreach (['Teknologi Informasi', 'Manufaktur', 'Keuangan', 'Pendidikan', 'Kesehatan', 'Perdagangan', 'Jasa', 'Lainnya'] as $area)
-                                <option value="{{ $area }}" @selected(old('business_area') === $area)>{{ $area }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label for="province" class="block text-sm font-semibold text-slate-800 mb-1.5">Provinsi *</label>
-                        <select id="province" name="province" required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm">
-                            <option value="">Pilih provinsi</option>
-                            @foreach (['Kepulauan Riau', 'DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'Jawa Timur', 'Bali', 'Sumatera Utara', 'Lainnya'] as $province)
-                                <option value="{{ $province }}" @selected(old('province') === $province)>{{ $province }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label for="company_website" class="block text-sm font-semibold text-slate-800 mb-1.5">Website / Media Sosial *</label>
-                        <input id="company_website" name="company_website" value="{{ old('company_website') }}" required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm" placeholder="https://contoh.co.id">
-                    </div>
-                    <div>
-                        <label for="company_email" class="block text-sm font-semibold text-slate-800 mb-1.5">Email Perusahaan *</label>
-                        <input id="company_email" name="company_email" type="email" value="{{ old('company_email') }}" required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm">
-                    </div>
-                    <div>
-                        <label for="contact_name" class="block text-sm font-semibold text-slate-800 mb-1.5">Nama Narahubung *</label>
-                        <input id="contact_name" name="contact_name" value="{{ old('contact_name') }}" required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm">
-                    </div>
-                    <div>
-                        <label for="contact_position" class="block text-sm font-semibold text-slate-800 mb-1.5">Jabatan Narahubung *</label>
-                        <input id="contact_position" name="contact_position" value="{{ old('contact_position') }}" required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="contact_phone" class="block text-sm font-semibold text-slate-800 mb-1.5">Kontak / WhatsApp *</label>
-                        <input id="contact_phone" name="contact_phone" value="{{ old('contact_phone') }}" required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm">
-                    </div>
-                </div>
-
                 <!-- Nama Perusahaan -->
                 <div x-data="{ count: '{{ old('company_name', $defaultCompanyName) }}'.length, max: 50 }">
                     <label for="company_name" class="block text-sm font-semibold text-slate-800 mb-1.5">

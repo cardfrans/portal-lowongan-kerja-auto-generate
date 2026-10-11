@@ -28,7 +28,20 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-        $user->fill($request->safe()->only(['name', 'email']));
+        $profileFields = ['name', 'email'];
+        if ($user->isCompany()) {
+            $profileFields = array_merge($profileFields, [
+                'business_area',
+                'province',
+                'company_website',
+                'company_email',
+                'contact_name',
+                'contact_position',
+                'contact_phone',
+            ]);
+        }
+
+        $user->fill($request->safe()->only($profileFields));
 
         if ($request->hasFile('logo')) {
             if ($user->logo_path) {

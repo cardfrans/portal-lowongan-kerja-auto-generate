@@ -16,7 +16,7 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
@@ -33,5 +33,19 @@ class ProfileUpdateRequest extends FormRequest
                 'max:10240',
             ],
         ];
+
+        if ($this->user()->isCompany()) {
+            $rules += [
+                'business_area' => ['required', 'string', 'max:100'],
+                'province' => ['required', 'string', 'max:100'],
+                'company_website' => ['required', 'string', 'max:255'],
+                'company_email' => ['required', 'email', 'max:255'],
+                'contact_name' => ['required', 'string', 'max:100'],
+                'contact_position' => ['required', 'string', 'max:100'],
+                'contact_phone' => ['required', 'string', 'max:30'],
+            ];
+        }
+
+        return $rules;
     }
 }

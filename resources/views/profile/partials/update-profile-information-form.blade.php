@@ -24,6 +24,38 @@
         </div>
 
         @if ($user->isCompany())
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                @foreach ([
+                    'business_area' => ['Bidang Perusahaan', 'select'],
+                    'province' => ['Provinsi', 'select'],
+                    'company_website' => ['Website / Media Sosial', 'text'],
+                    'company_email' => ['Email Perusahaan', 'email'],
+                    'contact_name' => ['Nama Narahubung', 'text'],
+                    'contact_position' => ['Jabatan Narahubung', 'text'],
+                    'contact_phone' => ['Kontak / WhatsApp', 'text'],
+                ] as $field => [$label, $type])
+                    <div class="{{ $field === 'contact_phone' ? 'sm:col-span-2' : '' }}">
+                        <x-input-label for="{{ $field }}" :value="$label" />
+                        @if ($type === 'select')
+                            @php
+                                $options = $field === 'business_area'
+                                    ? ['Teknologi Informasi', 'Manufaktur', 'Keuangan', 'Pendidikan', 'Kesehatan', 'Perdagangan', 'Jasa', 'Lainnya']
+                                    : ['Kepulauan Riau', 'DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'Jawa Timur', 'Bali', 'Sumatera Utara', 'Lainnya'];
+                            @endphp
+                            <select id="{{ $field }}" name="{{ $field }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="">Pilih {{ strtolower($label) }}</option>
+                                @foreach ($options as $option)
+                                    <option value="{{ $option }}" @selected(old($field, $user->{$field}) === $option)>{{ $option }}</option>
+                                @endforeach
+                            </select>
+                        @else
+                            <x-text-input id="{{ $field }}" name="{{ $field }}" type="{{ $type }}" class="mt-1 block w-full" :value="old($field, $user->{$field})" required />
+                        @endif
+                        <x-input-error class="mt-2" :messages="$errors->get($field)" />
+                    </div>
+                @endforeach
+            </div>
+
             <div>
                 <x-input-label for="logo" value="Logo Perusahaan (Opsional)" />
                 @if ($user->logo_path)

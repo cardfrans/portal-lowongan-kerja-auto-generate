@@ -12,7 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -25,6 +25,13 @@ class User extends Authenticatable
         'password',
         'role',
         'logo_path',
+        'business_area',
+        'province',
+        'company_website',
+        'company_email',
+        'contact_name',
+        'contact_position',
+        'contact_phone',
     ];
 
     public function isAdmin(): bool
@@ -51,7 +58,7 @@ class User extends Authenticatable
         $contents = Storage::disk('public')->get($this->logo_path);
         $mime = Storage::disk('public')->mimeType($this->logo_path) ?: 'image/png';
 
-        return 'data:' . $mime . ';base64,' . base64_encode($contents);
+        return 'data:'.$mime.';base64,'.base64_encode($contents);
     }
 
     /**
