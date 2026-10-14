@@ -9,13 +9,27 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table): void {
-            $table->string('business_area')->nullable();
-            $table->string('province')->nullable();
-            $table->string('company_website')->nullable();
-            $table->string('company_email')->nullable();
-            $table->string('contact_name')->nullable();
-            $table->string('contact_position')->nullable();
-            $table->string('contact_phone')->nullable();
+            if (! Schema::hasColumn('users', 'business_area')) {
+                $table->string('business_area')->nullable();
+            }
+            if (! Schema::hasColumn('users', 'province')) {
+                $table->string('province')->nullable();
+            }
+            if (! Schema::hasColumn('users', 'company_website')) {
+                $table->string('company_website')->nullable();
+            }
+            if (! Schema::hasColumn('users', 'company_email')) {
+                $table->string('company_email')->nullable();
+            }
+            if (! Schema::hasColumn('users', 'contact_name')) {
+                $table->string('contact_name')->nullable();
+            }
+            if (! Schema::hasColumn('users', 'contact_position')) {
+                $table->string('contact_position')->nullable();
+            }
+            if (! Schema::hasColumn('users', 'contact_phone')) {
+                $table->string('contact_phone')->nullable();
+            }
         });
     }
 
