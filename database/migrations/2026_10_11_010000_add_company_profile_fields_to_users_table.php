@@ -9,13 +9,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table): void {
-            $table->string('business_area')->nullable()->after('logo_path');
-            $table->string('province')->nullable()->after('business_area');
-            $table->string('company_website')->nullable()->after('province');
-            $table->string('company_email')->nullable()->after('company_website');
-            $table->string('contact_name')->nullable()->after('company_email');
-            $table->string('contact_position')->nullable()->after('contact_name');
-            $table->string('contact_phone')->nullable()->after('contact_position');
+            $table->string('business_area')->nullable();
+            $table->string('province')->nullable();
+            $table->string('company_website')->nullable();
+            $table->string('company_email')->nullable();
+            $table->string('contact_name')->nullable();
+            $table->string('contact_position')->nullable();
+            $table->string('contact_phone')->nullable();
         });
     }
 

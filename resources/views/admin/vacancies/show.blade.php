@@ -143,10 +143,10 @@
 
                 <div class="space-y-4">
                     @foreach ($jobVacancy->editLogs as $log)
-                        <div class="border rounded-xl p-4 {{ $log->status === 'unread' ? 'bg-purple-50/50 border-purple-200' : 'bg-slate-50 border-slate-200' }}">
+                        <div class="border rounded-xl p-4 {{ $log->read_status === 'unread' ? 'bg-purple-50/50 border-purple-200' : 'bg-slate-50 border-slate-200' }}">
                             <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
                                 <span>{{ $log->created_at->format('d M Y, H:i') }} WIB</span>
-                                @if ($log->status === 'unread')
+                                @if ($log->read_status === 'unread')
                                     <form method="POST" action="{{ route('admin.logs.read', $log) }}" class="inline">
                                         @csrf
                                         @method('PATCH')
@@ -159,7 +159,7 @@
                                 @endif
                             </div>
                             <p class="text-sm font-semibold text-slate-900">Alasan Perubahan:</p>
-                            <p class="text-sm text-slate-700 mt-0.5">"{{ $log->edit_reason }}"</p>
+                            <p class="text-sm text-slate-700 mt-0.5">"{{ $log->reason }}"</p>
                         </div>
                     @endforeach
                 </div>

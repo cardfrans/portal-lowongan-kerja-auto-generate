@@ -21,7 +21,6 @@ class StoreJobVacancyRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'company_name' => strip_tags(trim((string) $this->input('company_name'))),
             'position' => strip_tags(trim((string) $this->input('position'))),
             'required_count' => $this->input('required_count'),
             'qualifications' => strip_tags(trim((string) $this->input('qualifications'))),
@@ -44,7 +43,6 @@ class StoreJobVacancyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'company_name' => ['required', 'string', 'max:100'],
             'position' => ['required', 'string', 'max:50'],
             'required_count' => ['required', 'integer', 'min:1'],
             'qualifications' => ['required', 'string', 'min:10', 'max:450'],
@@ -65,8 +63,6 @@ class StoreJobVacancyRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'company_name.required' => 'Nama perusahaan wajib diisi.',
-            'company_name.max' => 'Nama perusahaan maksimal 50 karakter agar muat di poster.',
             'position.required' => 'Posisi pekerjaan wajib diisi.',
             'position.max' => 'Posisi pekerjaan maksimal 50 karakter agar muat di poster.',
             'qualifications.required' => 'Kualifikasi dan persyaratan kerja wajib diisi.',

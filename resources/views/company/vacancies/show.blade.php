@@ -151,11 +151,11 @@
                             <div class="flex items-center gap-2 text-xs text-slate-400">
                                 <span>{{ $log->created_at->format('d M Y, H:i') }} WIB</span>
                                 &bull;
-                                <span class="capitalize font-medium {{ $log->status === 'read' ? 'text-emerald-600' : 'text-amber-600' }}">
-                                    {{ $log->status === 'read' ? 'Sudah Ditinjau Admin' : 'Pesan Baru' }}
+                                <span class="capitalize font-medium {{ $log->read_status === 'read' ? 'text-emerald-600' : 'text-amber-600' }}">
+                                    {{ $log->read_status === 'read' ? 'Sudah Ditinjau Admin' : 'Pesan Baru' }}
                                 </span>
                             </div>
-                            <p class="text-slate-800 font-medium mt-1">"{{ $log->edit_reason }}"</p>
+                            <p class="text-slate-800 font-medium mt-1">"{{ $log->reason }}"</p>
                         </div>
                     @endforeach
                 </div>

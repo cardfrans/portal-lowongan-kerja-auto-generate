@@ -13,8 +13,10 @@ class JobEditLog extends Model
     protected $fillable = [
         'job_vacancy_id',
         'edit_reason',
+        'reason',
         'old_data',
         'status',
+        'read_status',
     ];
 
     protected function casts(): array
@@ -27,5 +29,15 @@ class JobEditLog extends Model
     public function jobVacancy(): BelongsTo
     {
         return $this->belongsTo(JobVacancy::class, 'job_vacancy_id');
+    }
+
+    public function getReasonAttribute(?string $value): string
+    {
+        return $value ?: (string) $this->edit_reason;
+    }
+
+    public function getReadStatusAttribute(?string $value): string
+    {
+        return $value ?: (string) $this->status;
     }
 }

@@ -202,8 +202,39 @@ class JobVacancyPortalTest extends TestCase
         $this->assertDatabaseHas('job_edit_logs', [
             'job_vacancy_id' => $vacancy->id,
             'edit_reason' => 'Mengubah titel posisi dan kualifikasi dari D3 ke S1.',
+            'reason' => 'Mengubah titel posisi dan kualifikasi dari D3 ke S1.',
             'status' => 'unread',
+            'read_status' => 'unread',
         ]);
+    }
+
+    public function test_revision_from_revised_returns_to_pending_review(): void
+    {
+        $vacancy = JobVacancy::create([
+            'company_id' => $this->companyA->id,
+            'company_name' => 'PT Astra International',
+            'position' => 'Backend Developer',
+            'qualifications' => 'S1 Teknik Informatika',
+            'address' => 'Jakarta',
+            'status' => 'revised',
+        ]);
+
+        $this->actingAs($this->companyA)->put(route('company.vacancies.update', $vacancy), [
+            'position' => 'Senior Backend Developer',
+            'required_count' => 1,
+            'qualifications' => 'S1 Teknik Informatika dan pengalaman API.',
+            'job_description' => 'Mengembangkan API untuk aplikasi internal perusahaan.',
+            'address' => 'Jakarta',
+            'work_location' => 'Jakarta',
+            'application_deadline' => now()->addDays(14)->toDateString(),
+            'application_method' => 'Email',
+            'application_address' => 'hr@example.com',
+            'information_consent' => '1',
+            'publication_consent' => '1',
+            'edit_reason' => 'Memperjelas posisi dan kebutuhan pengalaman kandidat.',
+        ])->assertRedirect();
+
+        $this->assertSame('pending', $vacancy->fresh()->status);
     }
 
     public function test_admin_can_approve_and_reject_vacancy(): void
@@ -324,6 +355,8 @@ class JobVacancyPortalTest extends TestCase
 
         $vacancy->refresh();
         $this->assertSame(2, $vacancy->selected_template);
+        $this->assertSame(2, $vacancy->poster_template);
+        $this->assertNotNull($vacancy->poster_generated_at);
         $this->assertStringEndsWith('.svg', $vacancy->generated_poster_path);
 
         $download = $this->actingAs($this->admin)

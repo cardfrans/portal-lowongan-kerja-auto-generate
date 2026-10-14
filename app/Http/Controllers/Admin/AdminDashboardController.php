@@ -51,7 +51,12 @@ class AdminDashboardController extends Controller
             'rejected' => $statusCounts->get('rejected', 0),
             'revised' => $statusCounts->get('revised', 0),
             'total' => $statusCounts->sum(),
-            'unread_logs' => JobEditLog::where('status', 'unread')->count(),
+            'unread_logs' => JobEditLog::where(function ($query): void {
+                $query->where('read_status', 'unread')
+                    ->orWhere(function ($legacyQuery): void {
+                        $legacyQuery->whereNull('read_status')->where('status', 'unread');
+                    });
+            })->count(),
         ];
 
         return view('admin.dashboard', compact('vacancies', 'stats', 'status'));
@@ -86,6 +91,10 @@ class AdminDashboardController extends Controller
             'rejection_reason' => null,
             'admin_reject_reason' => null,
             'company_revision_reason' => null,
+            'poster_template' => null,
+            'poster_generated_at' => null,
+            'selected_template' => null,
+            'generated_poster_path' => null,
         ]);
 
         return redirect()
@@ -103,6 +112,10 @@ class AdminDashboardController extends Controller
             'admin_reject_reason' => $request->rejection_reason,
             'rejection_reason' => $request->rejection_reason,
             'company_revision_reason' => null,
+            'poster_template' => null,
+            'poster_generated_at' => null,
+            'selected_template' => null,
+            'generated_poster_path' => null,
         ]);
 
         return redirect()
@@ -120,7 +133,9 @@ class AdminDashboardController extends Controller
                 'id',
                 'job_vacancy_id',
                 'edit_reason',
+                'reason',
                 'status',
+                'read_status',
                 'created_at',
             ])
             ->with('jobVacancy:id,company_name,position')
@@ -135,7 +150,7 @@ class AdminDashboardController extends Controller
      */
     public function markLogAsRead(JobEditLog $log): RedirectResponse
     {
-        $log->update(['status' => 'read']);
+        $log->update(['status' => 'read', 'read_status' => 'read']);
 
         return redirect()
             ->back()

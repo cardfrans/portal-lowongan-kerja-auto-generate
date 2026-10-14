@@ -49,7 +49,7 @@ class JobVacancyPolicy
     public function update(User $user, JobVacancy $jobVacancy): bool
     {
         return $user->id === $jobVacancy->company_id
-            && in_array($jobVacancy->status, ['rejected', 'draft'], true);
+            && in_array($jobVacancy->status, ['pending', 'approved', 'rejected', 'revised', 'draft'], true);
     }
 
     /**

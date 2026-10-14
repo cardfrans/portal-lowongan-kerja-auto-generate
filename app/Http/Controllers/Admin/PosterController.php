@@ -55,6 +55,8 @@ class PosterController extends Controller
 
         $jobVacancy->update([
             'selected_template' => $templateId,
+            'poster_template' => $templateId,
+            'poster_generated_at' => now(),
             'generated_poster_path' => 'posters/'.$filename,
         ]);
 
@@ -68,13 +70,16 @@ class PosterController extends Controller
      */
     public function download(JobVacancy $jobVacancy): Response|RedirectResponse
     {
-        if (! $jobVacancy->generated_poster_path || ! in_array($jobVacancy->selected_template, [1, 2], true)) {
+        $templateId = $jobVacancy->poster_template ?: $jobVacancy->selected_template;
+        if (! $jobVacancy->poster_generated_at || ! in_array($templateId, [1, 2], true)) {
             return redirect()
                 ->back()
                 ->with('error', 'Poster belum di-generate.');
         }
 
         $downloadName = 'poster-'.Str::slug($jobVacancy->company_name.'-'.$jobVacancy->position).'.svg';
+
+        $jobVacancy->selected_template = $templateId;
 
         return response($this->posterSvg($jobVacancy), 200, [
             'Content-Type' => 'image/svg+xml; charset=UTF-8',
@@ -120,7 +125,7 @@ class PosterController extends Controller
 
         $textBlock = static function (array $items, int $x, int $y, int $lineHeight, string $color) use ($escape): string {
             return collect($items)->map(
-                fn (string $line, int $index): string => '<text x="'.$x.'" y="'.($y + ($index * $lineHeight)).'" fill="'.$color.'" font-size="25" font-family="Arial, sans-serif">'. $escape($line) .'</text>'
+                fn (string $line, int $index): string => '<text x="'.$x.'" y="'.($y + ($index * $lineHeight)).'" fill="'.$color.'" font-size="25" font-family="Arial, sans-serif">'.$escape($line).'</text>'
             )->implode('');
         };
 

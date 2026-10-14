@@ -58,9 +58,7 @@ class JobVacancyController extends Controller
      */
     public function create(Request $request): View
     {
-        $defaultCompanyName = $request->user()->name;
-
-        return view('company.vacancies.create', compact('defaultCompanyName'));
+        return view('company.vacancies.create');
     }
 
     /**
@@ -146,13 +144,19 @@ class JobVacancyController extends Controller
         ]));
         $data['company_name'] = $data['name'];
         unset($data['name']);
+        $data['poster_template'] = null;
+        $data['poster_generated_at'] = null;
+        $data['selected_template'] = null;
+        $data['generated_poster_path'] = null;
 
         DB::transaction(function () use ($vacancy, $request, $data): void {
             JobEditLog::create([
                 'job_vacancy_id' => $vacancy->id,
                 'edit_reason' => $request->edit_reason,
+                'reason' => $request->edit_reason,
                 'old_data' => [],
                 'status' => 'unread',
+                'read_status' => 'unread',
             ]);
 
             $vacancy->update($data);

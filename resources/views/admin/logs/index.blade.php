@@ -38,7 +38,7 @@
                         </thead>
                         <tbody class="divide-y divide-slate-100 text-slate-700">
                             @foreach ($logs as $log)
-                                <tr class="hover:bg-slate-50/70 transition {{ $log->status === 'unread' ? 'bg-purple-50/20' : '' }}">
+                                <tr class="hover:bg-slate-50/70 transition {{ $log->read_status === 'unread' ? 'bg-purple-50/20' : '' }}">
                                     <td class="py-4 px-6 whitespace-nowrap text-slate-600">
                                         <div class="font-medium text-slate-900">{{ $log->created_at->format('d M Y') }}</div>
                                         <div class="text-xs text-slate-400">{{ $log->created_at->format('H:i') }} WIB</div>
@@ -55,10 +55,10 @@
                                         @endif
                                     </td>
                                     <td class="py-4 px-6 max-w-sm">
-                                        <div class="font-semibold text-slate-900 text-sm">"{{ $log->edit_reason }}"</div>
+                                        <div class="font-semibold text-slate-900 text-sm">"{{ $log->reason }}"</div>
                                     </td>
                                     <td class="py-4 px-6 text-right whitespace-nowrap">
-                                        @if ($log->status === 'unread')
+                                        @if ($log->read_status === 'unread')
                                             <form method="POST" action="{{ route('admin.logs.read', $log) }}" class="inline">
                                                 @csrf
                                                 @method('PATCH')

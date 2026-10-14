@@ -30,6 +30,13 @@ class RegistrationTest extends TestCase
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'business_area' => 'Teknologi Informasi',
+            'province' => 'Jawa Barat',
+            'company_website' => 'https://example.com',
+            'company_email' => 'company@example.com',
+            'contact_name' => 'Budi Santoso',
+            'contact_position' => 'Manajer HR',
+            'contact_phone' => '081234567890',
             'password' => 'password',
             'password_confirmation' => 'password',
             'logo' => UploadedFile::fake()->createWithContent('logo.png', $logoContents),
@@ -44,6 +51,13 @@ class RegistrationTest extends TestCase
         $response = $this->post('/register', [
             'name' => 'Company Without Logo',
             'email' => 'without-logo@example.com',
+            'business_area' => 'Retail',
+            'province' => 'DKI Jakarta',
+            'company_website' => 'https://withoutlogo.example',
+            'company_email' => 'info@withoutlogo.example',
+            'contact_name' => 'Anita Putri',
+            'contact_position' => 'Owner',
+            'contact_phone' => '081122334455',
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
@@ -52,6 +66,8 @@ class RegistrationTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => 'without-logo@example.com',
             'logo_path' => null,
+            'business_area' => 'Retail',
+            'province' => 'DKI Jakarta',
         ]);
         $response->assertRedirect(route('dashboard', absolute: false));
     }

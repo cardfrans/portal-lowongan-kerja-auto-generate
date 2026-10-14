@@ -37,6 +37,8 @@ class JobVacancy extends Model
         'admin_reject_reason',
         'company_revision_reason',
         'selected_template',
+        'poster_template',
+        'poster_generated_at',
         'generated_poster_path',
         'supporting_image_path',
         'promotional_caption',
@@ -51,6 +53,8 @@ class JobVacancy extends Model
             'information_consent' => 'boolean',
             'publication_consent' => 'boolean',
             'selected_template' => 'integer',
+            'poster_template' => 'integer',
+            'poster_generated_at' => 'datetime',
         ];
     }
 

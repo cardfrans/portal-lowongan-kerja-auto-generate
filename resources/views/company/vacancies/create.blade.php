@@ -22,30 +22,6 @@
             <form method="POST" action="{{ route('company.vacancies.store') }}" class="space-y-6">
                 @csrf
 
-                <!-- Nama Perusahaan -->
-                <div x-data="{ count: '{{ old('company_name', $defaultCompanyName) }}'.length, max: 50 }">
-                    <label for="company_name" class="block text-sm font-semibold text-slate-800 mb-1.5">
-                        Nama Perusahaan <span class="text-rose-500">*</span>
-                    </label>
-                    <input type="text"
-                           id="company_name"
-                           name="company_name"
-                           value="{{ old('company_name', $defaultCompanyName) }}"
-                           required
-                           maxlength="50"
-                           x-on:input="count = $el.value.length"
-                           class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 outline-none transition @error('company_name') border-rose-500 @enderror"
-                           placeholder="Contoh: PT Sumber Makmur Sentosa">
-                    <div class="flex items-center justify-between mt-1.5">
-                        @error('company_name')
-                            <p class="text-xs text-rose-600 font-medium">{{ $message }}</p>
-                        @else
-                            <span></span>
-                        @enderror
-                        <p class="text-xs ml-auto" :class="count > max - 10 ? 'text-rose-500 font-semibold' : 'text-slate-400'" x-text="count + '/' + max"></p>
-                    </div>
-                </div>
-
                 <!-- Posisi Pekerjaan -->
                 <div x-data="{ count: '{{ old('position') }}'.length, max: 50 }">
                     <label for="position" class="block text-sm font-semibold text-slate-800 mb-1.5">
